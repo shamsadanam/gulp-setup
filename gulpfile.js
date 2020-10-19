@@ -1,13 +1,14 @@
 // const del = require("del"); // need to install del
 const { init } = require("browser-sync");
+const browserSync = require("browser-sync").create();
 const gulp = require("gulp");
 const imagemin = require("gulp-imagemin");
 const sass = require("gulp-sass");
-const browserSync = require("browser-sync").create();
+const prefix = require("gulp-autoprefixer");
 /**
  * Top Level Functions
  *
- * gulp.task -> Define Tasks
+ * gulp.task -> Define Tasks -- DON'T need anymore in Gulp v4
  * gulp.src -> Point to files to use
  * gulp.dest -> Point to the output folder
  * gulp.watch -> Point to files and folders to use
@@ -45,18 +46,19 @@ function compileSASS(cb) {
         outputStyle: "compressed",
       }).on("error", sass.logError)
     )
+    .pipe(prefix("last 10 versions"))
     .pipe(gulp.dest("./dist/css"))
     .pipe(browserSync.stream());
   cb();
 }
 
 function watchFiles() {
-  gulp.watch(sassFiles, { ignoreInitial: false }, compileSASS);
   gulp.watch(
     htmlFiles,
     { ignoreInitial: false },
     gulp.series(copyHTML, reload)
   );
+  gulp.watch(sassFiles, { ignoreInitial: false }, compileSASS);
 }
 
 exports.watch = gulp.series(serverStart, watchFiles);
