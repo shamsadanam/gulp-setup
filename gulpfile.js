@@ -61,4 +61,6 @@ function watchFiles() {
   gulp.watch(sassFiles, { ignoreInitial: false }, compileSASS);
 }
 
+// gulp.watch("filePath", functionToRun);
+
 exports.watch = gulp.series(serverStart, watchFiles);
